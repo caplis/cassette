@@ -1,1 +1,1 @@
-exports.define = require('./lib/cassette');
+module.exports = require('./lib/cassette');
