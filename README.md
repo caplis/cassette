@@ -16,10 +16,21 @@ var users = cassette.define({
         primary_key: ['user_id']
     }
 });
-var user = users.get({user_id:'123'});
-user.name = 'Justin';
-user.save(); // update user name
 
-user = users.create({user_id:'124', name: 'Tim'});
-user.save(); // insert new user 'Tim'
+users.get({user_id:'123'}, function (err, user) {
+    // handle err
+    user.name = 'Justin';
+    user.save(function (err) { // update name
+        // handle err
+        console.log(user.to_object)
+    });
+});
+
+...
+
+var user = users.create({user_id:'124', name: 'Tim'});
+user.save(function (err) { // create user
+    // handle err
+    console.log(user.object())
+});
 ```
