@@ -13,5 +13,8 @@
     "hoek": "2.x.x",
     "joi": "6.x.x",
     "moment": "2.x.x"
+  },
+  "devDependencies": {
+    "mocha": "2.x.x"
   }
 }
