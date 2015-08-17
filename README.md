@@ -4,7 +4,9 @@ cassette
 Data modeling for Cassandra.
 
 ### Usage
-`
+
+```
+#!javascript
 var users = cassette.define({
     keyspace: 'user',
     table: 'user',
@@ -20,4 +22,4 @@ user.save(); // update user name
 
 user = users.create({user_id:'124', name: 'Tim'});
 user.save(); // insert new user 'Tim'
-`
+```
