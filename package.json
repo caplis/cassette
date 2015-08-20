@@ -9,12 +9,14 @@
   "author": "Tim Caplis",
   "license": "Copyright",
   "dependencies": {
+    "async": "1.x.x",
     "hapi-cassandra-plugin": "git+ssh://git@bitbucket.org/silpac/hapi-cassandra-plugin.git#1.4.0",
     "hoek": "2.x.x",
     "joi": "6.x.x",
     "moment": "2.x.x"
   },
   "devDependencies": {
-    "mocha": "2.x.x"
+    "mocha": "2.x.x",
+    "sinon": "1.x.x"
   }
 }

@@ -24,16 +24,46 @@ var post_def = {
     primary_key: ['user_id','post_id'],
     default_order: 'DESC'
 };
-var post_model = cassette.define({keyspace:'post', table:'post', definition: post_def});
+var posts = cassette.define({keyspace:'post', table:'post', definition: post_def});
 var params = {user_id:'22469097056894976', post_id:'22'};
-var post = post_model.create(params);
+var post = posts.create(params);
 post.save(function (err) {
-    console.log(post.to_object());
+    console.log('after save():', post.model);
+    post.subject = 'test';
+    post.save(function (err) {
+        console.log('after second save():', post.model);
+        post.sync(function (err) {
+            console.log('after sync():', post.model);
+            delete params.post_id;
+            var args = {limit: 5, params: params};
+            posts.cursor(args, function (err, collection) {
+                collection.items.forEach(function(m) {
+                    console.log(m.post_id, ' - ', m.created_at);
+                });
+                console.log('length:', collection.length);
+
+                collection.next(function(err) {
+                    collection.items.forEach(function(m) {
+                        console.log(m.post_id, ' - ', m.created_at);
+                    });
+                    console.log('length:', collection.length);
+                    collection.next(function(err) {
+                        collection.items.forEach(function(m) {
+                            console.log(m.post_id, ' - ', m.created_at);
+                        });
+                        console.log('length:', collection.length);
+                    });
+                });
+            });
+        });
+    });
 });
+
+post
 
 // post_model.get(params, function (err, res) {
 //     console.log(err);
-//     console.log(res.to_object());
+//     console.log(res.model);
 // });
 
 ///////////////////////////////////////////////////////////////////////
