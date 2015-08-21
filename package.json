@@ -10,7 +10,7 @@
   "license": "Copyright",
   "dependencies": {
     "async": "1.x.x",
-    "hapi-cassandra-plugin": "git+ssh://git@bitbucket.org/silpac/hapi-cassandra-plugin.git#1.4.0",
+    "cassandra-driver": "2.x.x",
     "hoek": "2.x.x",
     "joi": "6.x.x",
     "moment": "2.x.x"

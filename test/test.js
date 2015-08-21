@@ -1,7 +1,12 @@
-var cass = require('hapi-cassandra-plugin');
-var c = cass.Client({username:process.env.PLAT_CASSANDRA_USERNAME, password:process.env.PLAT_CASSANDRA_PASSWORD, hosts:process.env.PLAT_CASSANDRA_HOSTS.split(',')});
+var cass = require('cassandra-driver');
+var client = new cass.Client({
+    contactPoints: ['localhost'],
+    authProvider: new cass.auth.PlainTextAuthProvider(
+        process.env.PLAT_CASSANDRA_USERNAME,
+        process.env.PLAT_CASSANDRA_PASSWORD
+    )
+});
 var cassette = require('../index');
-var cql = require('../lib/cql');
 var joi = require('joi');
 var post_def = {
     user_id: joi.string(),
@@ -24,15 +29,32 @@ var post_def = {
     primary_key: ['user_id','post_id'],
     default_order: 'DESC'
 };
-var posts = cassette.define({keyspace:'post', table:'post', definition: post_def});
+var posts = cassette.define({
+    keyspace:'post',
+    table:'post',
+    definition: post_def,
+    client: client
+});
 var params = {user_id:'22469097056894976', post_id:'22'};
 var post = posts.create(params);
 post.save(function (err) {
+    if (err) {
+        console.log(err);
+        process.exit();
+    }
     console.log('after save():', post.model);
     post.subject = 'test';
     post.save(function (err) {
+        if (err) {
+            console.log(err);
+            process.exit();
+        }
         console.log('after second save():', post.model);
         post.sync(function (err) {
+            if (err) {
+                console.log(err);
+                process.exit();
+            }
             console.log('after sync():', post.model);
             delete params.post_id;
             var args = {limit: 5, params: params};
@@ -43,23 +65,30 @@ post.save(function (err) {
                 console.log('length:', collection.length);
 
                 collection.next(function(err) {
+                    if (err) {
+                        console.log(err);
+                        process.exit();
+                    }
                     collection.items.forEach(function(m) {
                         console.log(m.post_id, ' - ', m.created_at);
                     });
                     console.log('length:', collection.length);
                     collection.next(function(err) {
+                        if (err) {
+                            console.log(err);
+                            process.exit();
+                        }
                         collection.items.forEach(function(m) {
                             console.log(m.post_id, ' - ', m.created_at);
                         });
                         console.log('length:', collection.length);
+                        process.exit();
                     });
                 });
             });
         });
     });
 });
-
-post
 
 // post_model.get(params, function (err, res) {
 //     console.log(err);
