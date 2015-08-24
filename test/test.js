@@ -50,39 +50,46 @@ post.save(function (err) {
             process.exit();
         }
         console.log('after second save():', post.model);
-        post.sync(function (err) {
+        post.save(function (err) {
             if (err) {
                 console.log(err);
                 process.exit();
             }
-            console.log('after sync():', post.model);
-            delete params.post_id;
-            var args = {limit: 5, params: params};
-            posts.cursor(args, function (err, collection) {
-                collection.items.forEach(function(m) {
-                    console.log(m.post_id, ' - ', m.created_at);
-                });
-                console.log('length:', collection.length);
-
-                collection.next(function(err) {
-                    if (err) {
-                        console.log(err);
-                        process.exit();
-                    }
-                    collection.items.forEach(function(m) {
-                        console.log(m.post_id, ' - ', m.created_at);
+            console.log('after third save() with no changes:', post.model);
+            post.sync(function (err) {
+                if (err) {
+                    console.log(err);
+                    process.exit();
+                }
+                console.log('after sync():', post.model);
+                delete params.post_id;
+                var args = {limit: 5, params: params};
+                posts.cursor(args, function (err, collection) {
+                    collection.each(function(m, i) {
+                        console.log(i + ':', m.post_id, ' - ', m.created_at);
                     });
                     console.log('length:', collection.length);
+
                     collection.next(function(err) {
                         if (err) {
                             console.log(err);
                             process.exit();
                         }
-                        collection.items.forEach(function(m) {
-                            console.log(m.post_id, ' - ', m.created_at);
+                        collection.each(function(m, i) {
+                            console.log(i + ':', m.post_id, ' - ', m.created_at);
                         });
                         console.log('length:', collection.length);
-                        process.exit();
+                        collection.next(function(err) {
+                            if (err) {
+                                console.log(err);
+                                process.exit();
+                            }
+                            collection.each(function(m, i) {
+                                console.log(i + ':', m.post_id, ' - ', m.created_at);
+                            });
+                            console.log('length:', collection.length);
+                            process.exit();
+                        });
                     });
                 });
             });
