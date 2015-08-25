@@ -22,7 +22,7 @@ users.get({user_id:'123'}, function (err, user) {
     user.name = 'Justin';
     user.save(function (err) { // update name
         // handle err
-        console.log(user.to_object)
+        console.log(user.model)
     });
 });
 
@@ -31,6 +31,6 @@ users.get({user_id:'123'}, function (err, user) {
 var user = users.create({user_id:'124', name: 'Tim'});
 user.save(function (err) { // create user
     // handle err
-    console.log(user.object())
+    console.log(user.model)
 });
 ```
