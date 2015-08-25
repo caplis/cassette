@@ -36,43 +36,69 @@ var posts = cassette.define({
     client: client
 });
 
-var args = {
-    limit: 5,
-    params: {
-        user_id: '22469097056894976'
-    }
-};
-
-posts.cursor(args, function (err, collection) {
-    if (err) {
-        console.log(err);
-        process.exit();
-    }
-
-    console.log('length:', collection.length);
-    collection.each(function(m, i) {
-        console.log(i + ':', m.post_id, ' - ', m.created_at);
-    });
-
-    async.whilst(
-        function () {
-            return collection.length > 0;
-        },
-        function (cb) {
-            collection.next(function (err) {
-                if (err) { return cb(err); }
-                console.log('length:', collection.length);
-                collection.each(function(m, i) {
-                    console.log(i + ':', m.post_id, ' - ', m.created_at);
-                });
-                cb();
-            });
-        },
-        function (err) {
-            if (err) {
-                console.log(err);
+async.series({
+    test_map: function (async_cb) {
+        var args = {
+            params: {user_id: '22469097056894976'},
+            initial_value: [],
+            reduce: function (m, v) {
+                if (m.created_at < 1433797131 && m.created_at > 1433264231) {
+                    v.push(m);
+                }
             }
-            process.exit();
-        }
-    );
+        };
+
+        posts.map(args, function (err, res) {
+            if (err) {
+                return async_cb(err);
+            }
+            console.log('Map Results:');
+            res = res.map(function(m){
+                return m.created_at;
+            });
+            console.log(res);
+            async_cb();
+        });
+    },
+
+    test_cursor: function (async_cb) {
+        var args = {
+            limit: 5,
+            params: {user_id: '22469097056894976'}
+        };
+        posts.cursor(args, function (err, collection) {
+            if (err) {
+                return async_cb(err);
+            }
+            console.log('Cursor results:');
+            console.log('length:', collection.length);
+            collection.each(function(m, i) {
+                console.log(i + ':', m.post_id, ' - ', m.created_at);
+            });
+
+            async.whilst(
+                function () {
+                    return collection.length > 0;
+                },
+                function (cb) {
+                    collection.next(function (err) {
+                        if (err) {
+                            return cb(err);
+                        }
+                        console.log('length:', collection.length);
+                        collection.each(function(m, i) {
+                            console.log(i + ':', m.post_id, ' - ', m.created_at);
+                        });
+                        cb();
+                    });
+                },
+                async_cb
+            );
+        });
+    }
+}, function (err) {
+    if (err) {
+        console.log('ERROR:', err);
+    }
+    process.exit();
 });
