@@ -7,12 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tim Caplis",
-  "license": "Copyright",
+  "license": "MIT",
   "dependencies": {
     "async": "1.x.x",
     "cassandra-driver": "2.x.x",
-    "hoek": "2.x.x",
-    "joi": "6.x.x",
+    "hoek": "3.x.x",
+    "joi": "7.x.x",
     "moment": "2.x.x"
   },
   "devDependencies": {

@@ -1,15 +1,17 @@
-var async = require('async');
-var cass = require('cassandra-driver');
-var client = new cass.Client({
+"use strict";
+
+let async = require('async');
+let cass = require('cassandra-driver');
+let client = new cass.Client({
     contactPoints: ['localhost'],
     authProvider: new cass.auth.PlainTextAuthProvider(
         process.env.PLAT_CASSANDRA_USERNAME,
         process.env.PLAT_CASSANDRA_PASSWORD
     )
 });
-var cassette = require('../../index');
-var joi = require('joi');
-var posts = cassette.define({
+let cassette = require('../../index');
+let joi = require('joi');
+let posts = cassette.define({
     keyspace:'post',
     table:'post',
     definition: {
@@ -38,7 +40,7 @@ var posts = cassette.define({
 
 async.series({
     test_map: function (async_cb) {
-        var args = {
+        let args = {
             params: {user_id: '22469097056894976'},
             initial_value: [],
             reduce: function (m, v) {
@@ -62,7 +64,7 @@ async.series({
     },
 
     test_cursor: function (async_cb) {
-        var args = {
+        let args = {
             limit: 5,
             params: {user_id: '22469097056894976'}
         };

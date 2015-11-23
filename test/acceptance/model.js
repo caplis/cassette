@@ -1,14 +1,16 @@
-var cass = require('cassandra-driver');
-var client = new cass.Client({
+"use strict";
+
+let cass = require('cassandra-driver');
+let client = new cass.Client({
     contactPoints: ['localhost'],
     authProvider: new cass.auth.PlainTextAuthProvider(
         process.env.PLAT_CASSANDRA_USERNAME,
         process.env.PLAT_CASSANDRA_PASSWORD
     )
 });
-var cassette = require('../../index');
-var joi = require('joi');
-var post_def = {
+let cassette = require('../../index');
+let joi = require('joi');
+let post_def = {
     user_id: joi.string(),
     post_id: joi.string(),
     subject: joi.string(),
@@ -29,25 +31,26 @@ var post_def = {
     primary_key: ['user_id','post_id'],
     default_order: 'DESC'
 };
-var posts = cassette.define({
+let posts = cassette.define({
     keyspace:'post',
     table:'post',
     definition: post_def,
     client: client
 });
-var params = {user_id:'22469097056894976', post_id:'22'};
-var post = posts.create(params);
-
+let params = {user_id:'22469097056894976', post_id:'22'};
+let post = posts.create(params);
+console.log(post);
 console.log('FIRST SAVE >>');
 post.save(function (err) {
     if (err) {
         console.log(err);
         process.exit();
     }
-    console.log(post.model);
+    console.log(post.to_object());
 
     // updat model
     post.subject = 'test';
+    post.body = 'rock you like a hurricane';
 
     console.log('SECOND SAVE >>');
     post.save(function (err) {
@@ -55,7 +58,7 @@ post.save(function (err) {
             console.log(err);
             process.exit();
         }
-        console.log(post.model);
+        console.log(post.to_object());
 
         console.log('THIRD SAVE >>');
         post.save(function (err) {
@@ -63,7 +66,7 @@ post.save(function (err) {
                 console.log(err);
                 process.exit();
             }
-            console.log(post.model);
+            console.log(post.to_object());
 
             console.log('SYNC >>');
             post.sync(function (err) {
@@ -71,8 +74,15 @@ post.save(function (err) {
                     console.log(err);
                     process.exit();
                 }
-                console.log(post.model);
-                process.exit();
+                console.log(post.to_object());
+                post.delete(function(err) {
+                    if (err) {
+                        console.log(err);
+                        process.exit();
+                    }
+                    console.log('deleted')
+                    process.exit();
+                });
             });
         });
     });
