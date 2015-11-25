@@ -15,8 +15,8 @@ let posts = cassette.define({
     keyspace:'post',
     table:'post',
     definition: {
-        user_id: joi.string(),
-        post_id: joi.string(),
+        user_id: joi.string().required(),
+        post_id: joi.string().required(),
         subject: joi.string(),
         body: joi.string().allow(''),
         image_id: joi.string(),

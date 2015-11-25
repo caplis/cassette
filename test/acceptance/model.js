@@ -37,6 +37,7 @@ let posts = cassette.define({
     definition: post_def,
     client: client
 });
+
 let params = {user_id:'22469097056894976', post_id:'22'};
 let post = posts.create(params);
 console.log(post);
@@ -74,15 +75,17 @@ post.save(function (err) {
                     console.log(err);
                     process.exit();
                 }
+                post.body = 'this is a test';
+                console.log(post);
                 console.log(post.to_object());
-                post.delete(function(err) {
-                    if (err) {
-                        console.log(err);
-                        process.exit();
-                    }
-                    console.log('deleted')
+                // post.delete(function(err) {
+                //     if (err) {
+                //         console.log(err);
+                //         process.exit();
+                //     }
+                //     console.log('deleted');
                     process.exit();
-                });
+                // });
             });
         });
     });
