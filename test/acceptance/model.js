@@ -8,7 +8,8 @@ let client = new cass.Client({
         process.env.PLAT_CASSANDRA_PASSWORD
     )
 });
-let cassette = require('../../index');
+let Cassette = require('../../index');
+let cassette = new Cassette(client);
 let joi = require('joi');
 let post_def = {
     user_id: joi.string(),

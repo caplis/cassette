@@ -9,7 +9,8 @@ let client = new cass.Client({
         process.env.PLAT_CASSANDRA_PASSWORD
     )
 });
-let cassette = require('../../index');
+let Cassette = require('../../index');
+let cassette = new Cassette(client);
 let joi = require('joi');
 let posts = cassette.define({
     keyspace:'post',
@@ -20,8 +21,8 @@ let posts = cassette.define({
         subject: joi.string(),
         body: joi.string().allow(''),
         image_id: joi.string(),
-        repost_user_id: joi.string(),
-        repost_id: joi.string(),
+        repost_user_id: joi.string().allow(null),
+        repost_id: joi.string().allow(null),
         repost_body: joi.boolean(),
         product_user_id: joi.string(),
         product_id: joi.string(),
