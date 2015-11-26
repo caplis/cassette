@@ -1,6 +1,6 @@
 {
   "name": "cassette",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Cassandra data modeling",
   "main": "index.js",
   "scripts": {
@@ -10,12 +10,12 @@
   "license": "MIT",
   "dependencies": {
     "async": "1.x.x",
-    "cassandra-driver": "2.x.x",
     "hoek": "3.x.x",
     "joi": "7.x.x",
     "moment": "2.x.x"
   },
   "devDependencies": {
+    "cassandra-driver": "2.x.x",
     "mocha": "2.x.x",
     "sinon": "1.x.x"
   }
