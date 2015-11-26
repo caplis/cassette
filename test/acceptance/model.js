@@ -78,14 +78,14 @@ post.save(function (err) {
                 post.body = 'this is a test';
                 console.log(post);
                 console.log(post.to_object());
-                // post.delete(function(err) {
-                //     if (err) {
-                //         console.log(err);
-                //         process.exit();
-                //     }
-                //     console.log('deleted');
+                post.delete(function(err) {
+                    if (err) {
+                        console.log(err);
+                        process.exit();
+                    }
+                    console.log('deleted');
                     process.exit();
-                // });
+                });
             });
         });
     });
