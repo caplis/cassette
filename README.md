@@ -7,7 +7,11 @@ Data modeling for Cassandra.
 
 ```
 #!javascript
-var users = cassette.define({
+let cassandra = require('cassandra-driver');
+let client = new cassandra.Client(/* client details here */);
+let Cassette = require('cassette');
+let cassette = new Cassette(client);
+let users = cassette.define({
     keyspace: 'user',
     table: 'user',
     definition: {
@@ -17,20 +21,38 @@ var users = cassette.define({
     }
 });
 
+let user1 = null;
 users.get({user_id:'123'}, function (err, user) {
-    // handle err
-    user.name = 'Justin';
-    user.save(function (err) { // update name
-        // handle err
-        console.log(user.model)
+    // handle potential err
+    user1 = user;
+    user1.name = 'Justin';
+    user1.save(function (err) { // update name
+        // handle potential err
+        console.log(user1.model)
     });
 });
 
 ...
 
-var user = users.create({user_id:'124', name: 'Tim'});
-user.save(function (err) { // create user
-    // handle err
-    console.log(user.model)
+let user2 = users.create({user_id:'124', name: 'Tim'});
+user2.save(function (err) { // create user
+    // handle potential err
+    console.log(user2.model)
+});
+
+...
+
+cassette.batch([
+    {
+      model: user1,
+      op: 'delete'
+    },
+    {
+      model: user2,
+      op: 'delete'
+    }
+], function (err) {
+    // handle potential err
+    console.log('Models deleted!');
 });
 ```
