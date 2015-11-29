@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let cass = require('cassandra-driver');
 let client = new cass.Client({
@@ -12,7 +12,7 @@ let Cassette = require('../../index');
 let cassette = new Cassette(client);
 let joi = require('joi');
 let user_def = {
-    user_id: joi.string().regex(/\d+/),
+    user_id: joi.string().regex(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/),
     name: joi.string().min(3),
     created_at: joi.date(),
     updated_at: joi.date(),
@@ -24,7 +24,7 @@ let users = cassette.define({
     definition: user_def
 });
 
-let params = {user_id:'22469097056894976'};
+let params = {user_id:'694feda1-95a0-11e5-aa38-864f75a80d54'};
 let user = users.create(params);
 console.log(user);
 console.log('FIRST SAVE >>');

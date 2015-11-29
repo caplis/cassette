@@ -1,42 +1,28 @@
-"use strict";
+'use strict';
 
 let async = require('async');
 let cass = require('cassandra-driver');
 let client = new cass.Client({
     contactPoints: ['localhost'],
     authProvider: new cass.auth.PlainTextAuthProvider(
-        process.env.PLAT_CASSANDRA_USERNAME,
-        process.env.PLAT_CASSANDRA_PASSWORD
+        'cassandra',
+        'cassandra'
     )
 });
 let Cassette = require('../../index');
 let cassette = new Cassette(client);
 let joi = require('joi');
-let posts = cassette.define({
-    keyspace:'post',
-    table:'post',
-    definition: {
-        user_id: joi.string().required(),
-        post_id: joi.string().required(),
-        subject: joi.string(),
-        body: joi.string().allow(''),
-        image_id: joi.string(),
-        repost_user_id: joi.string().allow(null),
-        repost_id: joi.string().allow(null),
-        repost_body: joi.boolean(),
-        product_user_id: joi.string(),
-        product_id: joi.string(),
-        product_currency: joi.string(),
-        product_price: joi.number(),
-        product_quantity: joi.number(),
-        product_link: joi.string().allow(''),
-        product_status: joi.string(),
-        created_at: joi.date(),
-        updated_at: joi.date(),
-        primary_key: ['user_id','post_id'],
-        default_order: 'DESC'
-    },
-    client: client
+let user_def = {
+    user_id: joi.string().regex(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/),
+    name: joi.string().min(3),
+    created_at: joi.date(),
+    updated_at: joi.date(),
+    primary_key: ['user_id']
+};
+let users = cassette.define({
+    keyspace:'test',
+    table:'user',
+    definition: user_def
 });
 
 async.series({
@@ -51,7 +37,7 @@ async.series({
             }
         };
 
-        posts.map(args, function (err, res) {
+        users.map(args, function (err, res) {
             if (err) {
                 return async_cb(err);
             }
@@ -69,7 +55,7 @@ async.series({
             limit: 5,
             params: {user_id: '22469097056894976'}
         };
-        posts.cursor(args, function (err, collection) {
+        users.cursor(args, function (err, collection) {
             if (err) {
                 return async_cb(err);
             }
