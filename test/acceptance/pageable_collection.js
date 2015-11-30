@@ -1,20 +1,17 @@
 'use strict';
 
 let async = require('async');
-let cass = require('cassandra-driver');
-let client = new cass.Client({
-    contactPoints: ['localhost'],
-    authProvider: new cass.auth.PlainTextAuthProvider(
-        'cassandra',
-        'cassandra'
-    )
-});
 let Cassette = require('../../index');
-let cassette = new Cassette(client);
+let cassette = new Cassette({
+    hosts: ['localhost'],
+    username: 'cassandra',
+    password: 'cassandra'
+});
 let joi = require('joi');
 let user_def = {
     user_id: joi.string().regex(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/),
     name: joi.string().min(3),
+    active: joi.boolean().default(true),
     created_at: joi.date(),
     updated_at: joi.date(),
     primary_key: ['user_id']
@@ -28,7 +25,7 @@ let users = cassette.define({
 async.series({
     test_map: function (async_cb) {
         let args = {
-            params: {user_id: '22469097056894976'},
+            params: {user_id: '694feda1-95a0-11e5-aa38-864f75a80d54'},
             initial_value: [],
             reduce: function (m, v) {
                 if (m.created_at < 1433797131 && m.created_at > 1433264231) {
@@ -53,7 +50,7 @@ async.series({
     test_cursor: function (async_cb) {
         let args = {
             limit: 5,
-            params: {user_id: '22469097056894976'}
+            params: {user_id: '694feda1-95a0-11e5-aa38-864f75a80d54'}
         };
         users.cursor(args, function (err, collection) {
             if (err) {
