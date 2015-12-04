@@ -5,8 +5,7 @@ Data modeling for Cassandra.
 
 ### Usage
 
-```
-#!javascript
+```javascript
 let cassandra = require('cassandra-driver');
 let client = new cassandra.Client(/* client details here */);
 let Cassette = require('cassette');
