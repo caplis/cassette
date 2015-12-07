@@ -1,11 +1,12 @@
 'use strict';
 
 let Cassette = require('../../index');
-let cassette = new Cassette({
-    hosts: ['localhost'],
-    username: 'cassandra',
-    password: 'cassandra'
+let cassandra = require('cassandra-driver');
+let client = new cassandra.Client({
+    contactPoints: ['localhost'],
+    authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra','cassandra')
 });
+let cassette = new Cassette(client);
 let joi = require('joi');
 let user_def = {
     user_id: joi.string().regex(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/),
