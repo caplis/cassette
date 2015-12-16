@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "1.x.x",
-    "cassandra-driver": "2.x.x",
+    "cassandra-driver": "3.x.x",
     "hoek": "3.x.x",
     "joi": "7.x.x",
     "moment": "2.x.x"
