@@ -1,6 +1,6 @@
 # cassette changelog
 
-## Version 1.0.1
+## Version 1.1.0
 * ADDED: support for counter tables
 
 ## Version 1.0.0
